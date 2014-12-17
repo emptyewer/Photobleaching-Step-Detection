@@ -1,3 +1,8 @@
+/home/venky/SMExperiments/07November2014/1_CAHIWIW_0.1_PB_30nm_Linear_Back.dat
+/home/venky/SMExperiments/07November2014/2_CAHIWIW_0.1_PB_30nm_Linear_Back.dat
+/home/venky/SMExperiments/07November2014/3_CAHIWIW_0.1_PB_30nm_Linear_Back.dat
+/home/venky/SMExperiments/07November2014/4_CAHIWIW_0.1_PB_30nm_Linear_Back.dat
+/home/venky/SMExperiments/07November2014/5_CAHIWIW_0.1_PB_30nm_Linear_Back.dat
 /home/venky/SMExperiments/11November2014/1_CAHC_0.1_PB_30nm_Linear_back.dat
 /home/venky/SMExperiments/11November2014/1_CAHC_0.02_PB_30nm_Linear_Back.dat
 /home/venky/SMExperiments/11November2014/2_CAHC_0.1_PB_30nm_Linear_back.dat
