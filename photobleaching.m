@@ -1,19 +1,20 @@
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %     Photobleaching Step Detection
-%     Copyright (C) 2014  
+%     Copyright (C) 2014
 %     Venkatramanan Krishnamani, Rahul Chadda & ...
-% 
+%
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
 %     the Free Software Foundation, either version 3 of the License, or
 %     (at your option) any later version.
-% 
+%
 %     This program is distributed in the hope that it will be useful,
 %     but WITHOUT ANY WARRANTY; without even the implied warranty of
 %     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 %     GNU General Public License for more details.
-% 
+%
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %
@@ -49,7 +50,8 @@ for k = 1:length(path)
         input_data(2,:) = time_data(j,:);
         name_of_trajectory = strcat(name,'-AOI-', num2str(j));
         plot(input_data(2,:), input_data(1,:), 'Color', grey);
-        title(name_of_trajectory);
+        t = title(name_of_trajectory);
+        set(t,'interpreter','none');
         hold on;
         steps{j} = bleaching_step_detection(input_data,1, j);
         %ck_step_detection(input_data, 5, 3, 2, 1);
