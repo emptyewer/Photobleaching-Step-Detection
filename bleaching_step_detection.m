@@ -159,10 +159,15 @@ if step_num > 0
     steps(2,step_num)=mean(dat(1,dat(2,:)>steps(1,step_num)))-steps(3,step_num);
     % filter out the steps that are increasing in intensity (photobleaching
     % is strictly decreases in intensity)
-    step_time = NaN(1,length(steps(1,:)));
-    step_size = NaN(1,length(steps(1,:)));
-    step_baseline = NaN(1,length(steps(1,:)));
     filter_matrix = steps(2,:) < 0;
+    filter_matrix = repmat(filter_matrix, [size(steps(:,1)), 1]);
+    steps = reshape(steps(logical(filter_matrix)),[size(steps(:,1)), sum(filter_matrix(1,:))]);
+    %remove small steps that are smaller than 2x standard deviation of
+    %noise level in the longest segment
+    x_range = [0 steps(1,:) dat(2,end)];
+    [maxval, index] = max(abs(-diff(x_range)));
+    noise = std(dat(1,ceil(x_range(index)):floor(x_range(index+1))));
+    filter_matrix = steps(2,:) < -2*noise;
     filter_matrix = repmat(filter_matrix, [size(steps(:,1)), 1]);
     steps = reshape(steps(logical(filter_matrix)),[size(steps(:,1)), sum(filter_matrix(1,:))]);
     step_time = steps(1,:);

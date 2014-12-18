@@ -1,5 +1,5 @@
 clear all;
-path = textread('/home/venky/SMExperiments/software/step_detection/filelist.txt', '%s');
+path = textread('filelist.txt', '%s');
 for k = 1:length(path)
     load (path{k},'-mat');
     [pathstr,name,ext] = fileparts(path{k});
@@ -32,7 +32,7 @@ for k = 1:length(path)
         hold on;
         steps{j} = bleaching_step_detection(input_data,1, j);
         %ck_step_detection(input_data, 5, 3, 2, 1);
-        pause(1.5);
+        pause();
         clf
     end
     num_steps = {};
