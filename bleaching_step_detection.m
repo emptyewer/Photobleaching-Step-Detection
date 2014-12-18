@@ -170,7 +170,7 @@ while tindx<=length(dat(2,:))
     %within the while loop
 end
 
-%fprintf('Step Number: %d, Frame Number: %d', step_num, tindx);
+disp(['Step Number before refinement  = ' num2str(step_num)]);
 if step_num > 0
     %refine the last step size
     steps(2,step_num)=mean(dat(1,dat(2,:)>steps(1,step_num)))-steps(3,step_num);
@@ -181,17 +181,22 @@ if step_num > 0
     steps = reshape(steps(logical(filter_matrix)),[size(steps(:,1)), sum(filter_matrix(1,:))]);
     step_num = length(steps(1,:));
 end
-
+disp(['Step Number after removing incresing steps = ' num2str(step_num)]);
 if step_num > 0
-    %remove small steps that are smaller than 1x standard deviation of
+    %remove small steps that are smaller than 0.5x standard deviation of
     %noise level in the horizontal segments
-    x_range = [0 steps(1,:) dat(2,end)];
+    if steps(1,1) >= 4
+        start_index = 4;
+    else
+        start_index = steps(1,1);
+    end
+    x_range = [start_index steps(1,:) dat(2,end)];
     data_std = NaN(1,length(x_range)-1);
     for index = 1:length(x_range)-1
         data_std(1,index) = std(dat(1,ceil(x_range(index))+1:floor(x_range(index+1))));
     end
     noise = mean2(data_std);
-    filter_matrix = steps(2,:) < -1*noise;
+    filter_matrix = steps(2,:) < -0.5*noise;
     filter_matrix = repmat(filter_matrix, [size(steps(:,1)), 1]);
     steps = reshape(steps(logical(filter_matrix)),[size(steps(:,1)), sum(filter_matrix(1,:))]);
     %update step size to account for deletion of small steps
@@ -200,7 +205,7 @@ if step_num > 0
     end
     step_num = length(steps(1,:));
 end
-
+disp(['Step Number after removing increasing & small steps = ' num2str(step_num)]);
 if step_num > 1
     %remove blinking steps
     logical_filter = ones(size(steps(2,:)));
@@ -212,7 +217,7 @@ if step_num > 1
     logical_filter = repmat(logical_filter, [size(steps(:,1)), 1]);
     steps = reshape(steps(logical(logical_filter)),[size(steps(:,1)), sum(logical_filter(1,:))]);
 end
-
+disp(['Step Number after removing increasing & small & blinking steps = ' num2str(step_num)]);
 if step_num > 0
     step_time = steps(1,:);
     step_size = steps(2,:);
@@ -233,7 +238,7 @@ if step_num>0 && fig_num>0 ;
     end
     % disp(steps);
 end
-disp(['Total number of steps detected for AOI-' num2str(aoi) ' = ' num2str(step_num)]);
+disp(['Number of steps detected for AOI-' num2str(aoi) ' = ' num2str(step_num)]);
 %==== return detected steps ===========
 step_details = {};
 if step_num>0
