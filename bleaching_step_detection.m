@@ -127,7 +127,6 @@ while tindx<=length(dat(2,:))
     elseif chi_sq > (min_chi_sq+noise_level*dat_num) & ...                  %chi_sq increase significantly
             cntindx > f_reject      ;                                       %reject possible steps with 2 or
         %less frame dwell time
-
         step_num=step_num+1;
         if step_num==1     ;                                                %record first step
             dstep=outarg(1,1);
@@ -148,10 +147,6 @@ while tindx<=length(dat(2,:))
         else
             rawdat=dat(:,tindx:tindx+winsize-1);
         end
-        if fig_num>0                                                        % display detected step time
-            % disp(['      ' num2str(mean(dat(2,tindx+[-1 0])))]);
-        end
-
     else                                                                    %no step is detected
         inarg=outarg;                                                       %no change in min_chi_sq
         cntindx=cntindx+1;
@@ -169,7 +164,6 @@ while tindx<=length(dat(2,:))
     tindx=tindx+1;                                                          %advance to the next frame
     %within the while loop
 end
-
 disp(['Step Number before refinement  = ' num2str(step_num)]);
 if step_num > 0
     %refine the last step size
@@ -182,48 +176,44 @@ if step_num > 0
     step_num = length(steps(1,:));
 end
 disp(['Step Number after removing incresing steps = ' num2str(step_num)]);
+
 if step_num > 0
-    %remove small steps that are smaller than 0.5x standard deviation of
-    %noise level in the horizontal segments
-    if steps(1,1) >= 4
-        start_index = 4;
-    else
-        start_index = steps(1,1);
+    %remove extra deep steps
+    for i = 1:length(steps(3,:))-1
+        steps(2,i) = steps(3,i+1) - steps(3,i);
     end
-    x_range = [start_index steps(1,:) dat(2,end)];
-    data_std = NaN(1,length(x_range)-1);
-    for index = 1:length(x_range)-1
-        data_std(1,index) = std(dat(1,ceil(x_range(index))+1:floor(x_range(index+1))));
-    end
-    noise = mean2(data_std);
-    filter_matrix = steps(2,:) < -0.5*noise;
-    filter_matrix = repmat(filter_matrix, [size(steps(:,1)), 1]);
-    steps = reshape(steps(logical(filter_matrix)),[size(steps(:,1)), sum(filter_matrix(1,:))]);
-    %update step size to account for deletion of small steps
-    for k = 1:length(steps(3,:))-1
-        steps(2,k) = steps(3,k) - steps(3,k+1);
-    end
-    step_num = length(steps(1,:));
-end
-disp(['Step Number after removing increasing & small steps = ' num2str(step_num)]);
-if step_num > 1
-    %remove blinking steps
-    logical_filter = ones(size(steps(2,:)));
-    for k = 1:length(steps(2,:))-1
-        if (steps(3,k)+steps(2,k)) ~= steps(3,k+1)
-            logical_filter(k) = 0;
+    
+    %remove small steps that are smaller than 1x standard deviation of
+    %local noise level
+    %get local noise level backing up noise_window steps
+    x_range = steps(1,:);
+    noise_window = 10;
+    filter_matrix = ones(size(steps(2,:)));
+    for j = 1:length(x_range)
+        if (x_range(j) - noise_window) <= 0
+            start_point = ceil(x_range(j));
+            end_point = floor(x_range(j)+noise_window);
+        else
+            start_point = ceil(x_range(j)-noise_window);
+            end_point = floor(x_range(j));
+        end
+        local_noise = std(dat(1,start_point:end_point));
+        if abs(steps(2,j)) <= abs(local_noise)
+            filter_matrix(j) = 0;
         end
     end
-    logical_filter = repmat(logical_filter, [size(steps(:,1)), 1]);
-    steps = reshape(steps(logical(logical_filter)),[size(steps(:,1)), sum(logical_filter(1,:))]);
-end
-disp(['Step Number after removing increasing & small & blinking steps = ' num2str(step_num)]);
-if step_num > 0
-    step_time = steps(1,:);
-    step_size = steps(2,:);
-    step_baseline = steps(3,:);
+    
+    filter_matrix = repmat(filter_matrix, [size(steps(:,1)), 1]);
+    steps = reshape(steps(logical(filter_matrix)),[size(steps(:,1)), sum(filter_matrix(1,:))]);
+    
+    %update step size to account for deletion of small steps
+    %remove extra deep steps
+    for k = 1:length(steps(3,:))-1
+        steps(2,k) = steps(3,k+1) - steps(3,k);
+    end
     step_num = length(steps(1,:));
 end
+disp(['Step Number after removing small steps = ' num2str(step_num)]);
 
 %plot the detected steps and display step data
 if step_num>0 && fig_num>0 ;
@@ -238,11 +228,10 @@ if step_num>0 && fig_num>0 ;
     end
     % disp(steps);
 end
-disp(['Number of steps detected for AOI-' num2str(aoi) ' = ' num2str(step_num)]);
 %==== return detected steps ===========
 step_details = {};
 if step_num>0
-    step_details = {step_time,step_size,step_baseline};
+    step_details = {steps(1,:),steps(2,:),steps(3,:)};
 end
 rv={step_num,step_details};
 % steps(1,:)=step time.

@@ -44,19 +44,21 @@ for k = 1:length(path)
     tic
     grey = [0.5 0.5 0.5];
     steps = {};
-    for j = 1:number_of_aois
+    parfor j = 1:number_of_aois
         input_data = zeros(2,number_of_frames);
         input_data(1,:) = trajectories(j,:);
         input_data(2,:) = time_data(j,:);
-        %Comment if running parfor
-        name_of_trajectory = strcat(name,'-AOI-', num2str(j));
-        plot(input_data(2,:), input_data(1,:), 'Color', grey);
-        t = title(name_of_trajectory);
-        set(t,'interpreter','none');
-        hold on;
+        disp(['>>> Starting to refine AOI - ' num2str(j)]);
+        %Comment below if running parfor
+%         clf
+%         name_of_trajectory = strcat(name,'-AOI-', num2str(j));
+%         plot(input_data(2,:), input_data(1,:), 'Color', grey);
+%         t = title(name_of_trajectory);
+%         set(t,'interpreter','none');
+%         hold on;
         steps{j} = bleaching_step_detection(input_data,1, j);
-        pause(0.1);
-        clf
+        disp(['Finished with AOI - ' num2str(j) ': Steps = ' num2str(steps{j}{1})]);
+%         pause(0.1);
     end
     num_steps = {};
     step_details = {};
