@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 clear all;
-path = textread('filelist-test.txt', '%s');
+path = textread('filelist.txt', '%s');
 for k = 1:length(path)
     load (path{k},'-mat');
     [pathstr,name,ext] = fileparts(path{k});

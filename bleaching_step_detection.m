@@ -164,7 +164,7 @@ while tindx<=length(dat(2,:))
     tindx=tindx+1;                                                          %advance to the next frame
     %within the while loop
 end
-disp(['Step Number before refinement  = ' num2str(step_num)]);
+% disp(['Step Number before refinement  = ' num2str(step_num)]);
 if step_num > 0
     %refine the last step size
     steps(2,step_num)=mean(dat(1,dat(2,:)>steps(1,step_num)))-steps(3,step_num);
@@ -175,7 +175,7 @@ if step_num > 0
     steps = reshape(steps(logical(filter_matrix)),[size(steps(:,1)), sum(filter_matrix(1,:))]);
     step_num = length(steps(1,:));
 end
-disp(['Step Number after removing incresing steps = ' num2str(step_num)]);
+% disp(['Step Number after removing incresing steps = ' num2str(step_num)]);
 
 if step_num > 0
     %remove extra deep steps
@@ -213,7 +213,7 @@ if step_num > 0
     end
     step_num = length(steps(1,:));
 end
-disp(['Step Number after removing small steps = ' num2str(step_num)]);
+% disp(['Step Number after removing small steps = ' num2str(step_num)]);
 
 %plot the detected steps and display step data
 if step_num>0 && fig_num>0 ;
