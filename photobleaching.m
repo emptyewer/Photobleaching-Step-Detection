@@ -44,19 +44,19 @@ for k = 1:length(path)
     tic
     grey = [0.5 0.5 0.5];
     steps = {};
-    for j = 1:number_of_aois
+    parfor j = 1:number_of_aois
         input_data = zeros(2,number_of_frames);
         input_data(1,:) = trajectories(j,:);
         input_data(2,:) = time_data(j,:);
-        name_of_trajectory = strcat(name,'-AOI-', num2str(j));
-        plot(input_data(2,:), input_data(1,:), 'Color', grey);
-        t = title(name_of_trajectory);
-        set(t,'interpreter','none');
-        hold on;
+%         name_of_trajectory = strcat(name,'-AOI-', num2str(j));
+%         plot(input_data(2,:), input_data(1,:), 'Color', grey);
+%         t = title(name_of_trajectory);
+%         set(t,'interpreter','none');
+%         hold on;
         steps{j} = bleaching_step_detection(input_data,1, j);
-        %ck_step_detection(input_data, 5, 3, 2, 1);
-        pause();
-        clf
+%         ck_step_detection(input_data, 5, 3, 2, 1);
+%         pause(0.1);
+%         clf
     end
     num_steps = {};
     step_details = {};
