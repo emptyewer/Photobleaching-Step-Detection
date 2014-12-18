@@ -213,10 +213,12 @@ if step_num > 1
     steps = reshape(steps(logical(logical_filter)),[size(steps(:,1)), sum(logical_filter(1,:))]);
 end
 
-step_time = steps(1,:);
-step_size = steps(2,:);
-step_baseline = steps(3,:);
-step_num = length(steps(1,:));
+if step_num > 0
+    step_time = steps(1,:);
+    step_size = steps(2,:);
+    step_baseline = steps(3,:);
+    step_num = length(steps(1,:));
+end
 
 %plot the detected steps and display step data
 if step_num>0 && fig_num>0 ;
