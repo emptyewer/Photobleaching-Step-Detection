@@ -1,7 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %     Photobleaching Step Detection
-%     Copyright (C) 2014  Venkatramanan Krishnamani, Rahul Chadda
+%     Copyright (C) 2014  
+%     Venkatramanan Krishnamani, Rahul Chadda & ...
 % 
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
