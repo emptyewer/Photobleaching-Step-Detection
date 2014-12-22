@@ -53,12 +53,10 @@ function rv=bleaching_step_detection(dat,fig_num,aoi)
 winsize = 10;                                                               %10 frames; need to consider multiple steps within a window
 %dwell rejection
 f_reject = 2;                                                               %a step has to last more than 2 frames
-
 %set bleaching step to be negative
 forward = -1;
 %use 3 step size initial guesses to scan for different step sizes
 gstep = forward*[0.25 0.5 0.75]*(max(dat(1,:))-min(dat(1,:)));
-
 % set initial window and values
 inarg = [gstep(1) mean(dat(1,1:5))];                                        %[step_size_guess  baseline_estimate]
 rawdat = dat(:,1:winsize);                                                  %data window for step detection
@@ -82,7 +80,6 @@ while tindx<=length(dat(2,:))
     %--- define Heaviside fitting function ---
     chi2_heaviside=inline(['sum(([' num2str(rawdat(1,:)) ']-inarg(1)*([' ...
         num2str(rawdat(2,:)) ']>' num2str(tstep) ')-inarg(2)).^2)'],'inarg');
-
     %try different step guesses
     %gstep(1)
     inarg(1)=gstep(1);
@@ -96,7 +93,6 @@ while tindx<=length(dat(2,:))
     inarg(1)=gstep(3);
     outarg=fminsearch(chi2_heaviside,inarg, optimset('MaxFunEvals',1e20,'MaxIter',1e10));
     chi_sq3=sum((rawdat(1,:)-outarg(1)*(rawdat(2,:)>tstep)-outarg(2)).^2);
-
     chi_sq=min([chi_sq1 chi_sq2 chi_sq3]);
     dat_num = length(rawdat(1,:));                                          %number of points used in calculating
     %chi square.  This is used to normalize the global noise_level.
@@ -136,7 +132,6 @@ while tindx<=length(dat(2,:))
             steps(2,step_num-1)=baseline-steps(3,step_num-1);               %refine previous step size
         end
         inarg=[dstep baseline+dstep];                                       %set initial guesses for the next round
-
         steps=[steps [mean(dat(2,tindx+[-1 0]));dstep;baseline]];           %record a step detected
 
         tflag=1;                                                            %reset window flag for a new window
@@ -205,7 +200,6 @@ if step_num > 0
     
     filter_matrix = repmat(filter_matrix, [size(steps(:,1)), 1]);
     steps = reshape(steps(logical(filter_matrix)),[size(steps(:,1)), sum(filter_matrix(1,:))]);
-    
     %update step size to account for deletion of small steps
     %remove extra deep steps
     for k = 1:length(steps(3,:))-1
